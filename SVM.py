@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import multiprocessing
 
 class SVM(object):
@@ -26,7 +27,7 @@ class SVM(object):
         return loss,dW
     
     
-    def train(self,x,y,reg=1e-5,learning_rate=1e-3,num_iters=100,batch_size=200,verbose=False, nthreads=4):
+    def train(self,x_val, y_val, start_time, x,y,reg=1e-5,learning_rate=1e-3,num_iters=100,batch_size=200,verbose=False, nthreads=4):
         
         
         num_train,dim=x.shape
@@ -38,7 +39,7 @@ class SVM(object):
         batch_y=None
         history_loss=[]
         n = nthreads
-        print('nthreads:', n)
+        #print('nthreads:', n)
         p = multiprocessing.Pool(processes=n)
         for i in range(num_iters):
             mask=np.random.choice(num_train,batch_size,replace=False)
@@ -53,13 +54,19 @@ class SVM(object):
             grad = np.mean(temp, axis=0)
             temp2 = [i[0] for i in gradsAndLosses]
             loss = np.mean(temp2, axis=0)
-            print(loss)
+            #print(loss)
             self.W+=-learning_rate*grad
             
             history_loss.append(loss)
             
             if verbose==True and i%100==0:
-                print("iteratons:%d/%d,loss:%f"%(i,num_iters,loss))
+                #print("iteratons:%d/%d,loss:%f"%(i,num_iters,loss))
+                pass
+
+            y_pre=self.predict(x_val)
+            acc=np.mean(y_pre==y_val)
+            t = time.process_time() - start_time
+            print(t, acc)
             
         return history_loss
         

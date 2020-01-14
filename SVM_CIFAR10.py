@@ -105,7 +105,8 @@ if __name__ == '__main__':
     for lr in learning_rate:
         for rs in regularization_strength:
             svm=SVM()
-            history_loss=svm.train(x_train,y_train,reg=rs,learning_rate=lr,num_iters=2000)
+            start_time = time.process_time()
+            history_loss=svm.train(x_val, y_val, start_time, x_train,y_train,reg=rs,batch_size=8,learning_rate=lr,num_iters=2000)
             y_pre=svm.predict(x_val)
             acc=np.mean(y_pre==y_val)
             
@@ -123,14 +124,3 @@ if __name__ == '__main__':
     acc=np.mean(y_pre==y_test)
     print('The test accuracy with self-realized svm is:%f'%(acc))
     print("\nProgram time of self-realized svm is:%ss"%(str(end-start)))
-    
-    VisualizeWeights(best_svm.W)
-    
-    start=time.process_time()
-    lin_clf = s.LinearSVC()
-    lin_clf.fit(x_train,y_train)
-    y_pre=lin_clf.predict(x_test)
-    acc=np.mean(y_pre==y_test)
-    print("The test accuracy with svm.LinearSVC is:%f"%(acc))
-    end=time.process_time()
-    print("Program time of svm.LinearSVC is:%ss"%(str(end-start)))
