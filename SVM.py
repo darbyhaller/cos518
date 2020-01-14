@@ -26,7 +26,8 @@ class SVM(object):
         return loss,dW
     
     
-    def train(self,x,y,reg=1e-5,learning_rate=1e-3,num_iters=100,batch_size=200,verbose=False):
+    def train(self,x,y,reg=1e-5,learning_rate=1e-3,num_iters=100,batch_size=200,verbose=False, nthreads=4):
+        
         
         num_train,dim=x.shape
         num_class=np.max(y)+1
@@ -36,7 +37,8 @@ class SVM(object):
         batch_x=None
         batch_y=None
         history_loss=[]
-        n = 4
+        n = nthreads
+        print('nthreads:', n)
         p = multiprocessing.Pool(processes=n)
         for i in range(num_iters):
             mask=np.random.choice(num_train,batch_size,replace=False)
